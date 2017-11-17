@@ -8,6 +8,10 @@ public class Scheduling{
 
     private int current_Algorithm;
 
+    public Scheduling(Despachante d){
+        this.despachante = d;
+    }
+
     public Process getnextProcess(){
         this.nextProcess = this.list.removeFirst();
         return nextProcess;

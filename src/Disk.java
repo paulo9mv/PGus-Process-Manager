@@ -9,6 +9,10 @@ public class Disk{
     public boolean stop = false;
     public boolean first = true;
 
+    public Disk(Despachante d){
+        this.despachante = d;
+    }
+
     public void newProcessDisk(Process process){
         list.addLast(process);
         if(first){

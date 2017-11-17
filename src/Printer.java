@@ -9,6 +9,10 @@ public class Printer{
     public boolean stop = false;
     public boolean first = true;
 
+    public Printer(Despachante d){
+        this.despachante = d;
+    }
+
     public void newProcessPrinter(Process process){
         list.addLast(process);
         if(first){

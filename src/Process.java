@@ -20,6 +20,20 @@ public class Process{
     private int disk_cycles_to_complete;
     private int disk_cycles_processed;
 
+    public Process(int id, String name, int cycles, int disk, int printer){
+        this.id = id;
+        this.name = name;
+        this.cycles_to_complete = cycles;
+        this.printer_cycles_to_complete = printer;
+        this.disk_cycles_to_complete = disk;
+
+        if(disk > 0)
+            this.disk = true;
+        if(printer > 0)
+            this.printer = true;
+
+    }
+
 
     public int getId() {
         return id;

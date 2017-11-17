@@ -11,8 +11,11 @@ public class Despachante{
 
     public LinkedList<Process> completedProcess = new LinkedList<Process>();
 
-    public Despachante(Core core){
-        this.core = core;
+    public void inicialize(){
+        this.core = new Core(this);
+        this.disk = new Disk(this);
+        this.printer = new Printer(this);
+        this.scheduling = new Scheduling(this);
     }
 
     public void toScheduling(Process process){

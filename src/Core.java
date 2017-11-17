@@ -14,6 +14,10 @@ public class Core{
 
     private boolean busy = false;
 
+    public Core(Despachante d){
+        this.despachante = d;
+    }
+
     public int getQuantum() {
         return quantum;
     }
