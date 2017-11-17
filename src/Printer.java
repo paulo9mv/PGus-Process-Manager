@@ -1,6 +1,6 @@
 import java.util.LinkedList;
 import java.util.Random;
-public class Printer{
+public class Printer implements Runnable{
     private LinkedList<Process> list = new LinkedList<Process>();
     private Process tempProcess;
     private Despachante despachante;
@@ -22,8 +22,9 @@ public class Printer{
     }
 
     public void processing(){
-        while(!stop){
+            System.out.printf("Printer Thread\n");
             if(!list.isEmpty()){
+               System.out.printf("Impressora Executando Processo %d\n", tempProcess.getId());
             if(tempProcess.printerComplete()){
                 despachante.receiveBlockedProcess(tempProcess);
 
@@ -39,6 +40,13 @@ public class Printer{
                 tempProcess.setPrinter_cycles_to_complete(1);
         }
     }
+    
+
+    @Override
+    public void run() {
+        while(true){
+            processing();
+        }
     }
 
 

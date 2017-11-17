@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Core{
+public class Core implements Runnable{
     private int quantum;
     private Process actual_process;
     private Despachante despachante;
@@ -36,14 +36,20 @@ public class Core{
     }
 
     public void toProcess(Process process){
-        processing(process);
+        if(!busy){
+            System.out.printf("Core indo processar");
+            busy = true;
+            actual_process = process;    
+        }
     }
 
-    private void processing(Process process){
-        busy = true;
-        actual_process = process;
-
+    private void processing(){
+        System.out.printf("Core Thread\n");
+        if(busy){
         actual_process.setState(Process.IN_EXECUTION);
+        
+        System.out.printf("CPU Executando Processo %d\n", actual_process.getId());
+        
 
         while(actual_process.getState() == Process.IN_EXECUTION){
 
@@ -71,6 +77,14 @@ public class Core{
             despachante.fromCore(actual_process, END);
 
         busy = false;
+        }
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            processing();
+        }
     }
 
 }
