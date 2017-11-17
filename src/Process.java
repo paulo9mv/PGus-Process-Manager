@@ -106,7 +106,7 @@ public class Process{
     }
 
     public void setDisk_cycles_processed(int disk_cycles_processed) {
-        this.disk_cycles_processed = disk_cycles_processed;
+        this.disk_cycles_processed += disk_cycles_processed;
     }
 
     public boolean diskComplete(){
@@ -124,6 +124,9 @@ public class Process{
             return true;
         return false;
     }
-
-
+    public boolean isDone(){
+        if(CPUComplete() && printerComplete() && diskComplete())
+            return true;
+        return false;
+    }
 }

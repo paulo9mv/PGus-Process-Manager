@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+import java.util.Random;
 public class Disk{
     private LinkedList<Process> list = new LinkedList<Process>();
     private Process tempProcess;
@@ -17,7 +19,7 @@ public class Disk{
 
     public void processing(){
         while(!stop){
-            if(!list.isempty()){
+            if(!list.isEmpty()){
             if(tempProcess.diskComplete()){
                 despachante.receiveBlockedProcess(tempProcess);
 

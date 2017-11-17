@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Random;
+
 public class Core{
     private int quantum;
     private Process actual_process;
@@ -5,6 +8,7 @@ public class Core{
 
     public final static int PRINTER = 1;
     public final static int DISK = 2;
+    public final static int END = 3;
 
     private Random random = new Random();
 
@@ -27,7 +31,11 @@ public class Core{
         despachante.fromCore(actual_process, flag);
     }
 
-    public void processing(Process process){
+    public void toProcess(Process process){
+        processing(process);
+    }
+
+    private void processing(Process process){
         busy = true;
         actual_process = process;
 
@@ -40,7 +48,7 @@ public class Core{
                 ioBlock(DISK);
         }
         else if(random.nextInt(100) < 20){
-            if(actual_process.hasPrinter() && !actual_process.printerComplete()))
+            if(actual_process.hasPrinter() && !actual_process.printerComplete())
                 ioBlock(PRINTER);
         }
         else if(!actual_process.CPUComplete()){
@@ -55,6 +63,9 @@ public class Core{
             }
         }
         }
+        if(actual_process.CPUComplete())
+            despachante.fromCore(actual_process, END);
+
         busy = false;
     }
 
