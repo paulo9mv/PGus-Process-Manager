@@ -1,6 +1,11 @@
 public class Core{
     private int quantum;
     private Process actual_process;
+    private Despachante despachante;
+
+    public final static int PRINTER = 1;
+    public final static int DISK = 2;
+
     private Random random = new Random();
 
     private boolean busy = false;
@@ -17,24 +22,40 @@ public class Core{
         return busy;
     }
 
+    private void ioBlock(int flag){
+        actual_process.setState(Process.BLOCKED);
+        despachante.fromCore(actual_process, flag);
+    }
+
     public void processing(Process process){
         busy = true;
         actual_process = process;
 
         actual_process.setState(Process.IN_EXECUTION);
 
-        while(actual_process.getState == Process.IN_EXECUTION){
-        if(random.nextInt(100) < 20){
-            if(actual_process.hasDisk() && !actual_process.diskComplete()){
-                actual_process.setState(Process.BLOCKED);
+        while(actual_process.getState() == Process.IN_EXECUTION){
 
-                busy = false;
-            }
+        if(random.nextInt(100) < 20){
+            if(actual_process.hasDisk() && !actual_process.diskComplete())
+                ioBlock(DISK);
+        }
+        else if(random.nextInt(100) < 20){
+            if(actual_process.hasPrinter() && !actual_process.printerComplete()))
+                ioBlock(PRINTER);
         }
         else if(!actual_process.CPUComplete()){
             actual_process.setcycles_to_complete(1);
         }
+        else{
+            if(actual_process.hasPrinter() && !actual_process.printerComplete()){
+                ioBlock(PRINTER);
+            }
+            else if(actual_process.hasDisk() && !actual_process.diskComplete()){
+                ioBlock(PRINTER);
+            }
         }
+        }
+        busy = false;
     }
 
 }
