@@ -1,5 +1,8 @@
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class Printer implements Runnable{
     private LinkedList<Process> list = new LinkedList<Process>();
     private Process tempProcess;
@@ -21,30 +24,48 @@ public class Printer implements Runnable{
         }
     }
 
-    public void processing(){
-            System.out.printf("Printer Thread\n");
+    public void processing(){       
             if(!list.isEmpty()){
                System.out.printf("Impressora Executando Processo %d\n", tempProcess.getId());
             if(tempProcess.printerComplete()){
                 despachante.receiveBlockedProcess(tempProcess);
-
+                
+                try{
                 tempProcess = list.removeFirst();
+                }
+                catch(Exception NoSuchElementException){
+                    tempProcess = null;
+                }
             }
-
-            if(mRandom.nextInt(100) < 20){  //Random pause on process request I/O
+            
+            if(tempProcess != null){
+            if(mRandom.nextInt(100) < 5){  //Random pause on process request I/O
                 despachante.receiveBlockedProcess(tempProcess);
 
+                 try{
                 tempProcess = list.removeFirst();
+                }
+                catch(Exception NoSuchElementException){
+                    
+                }
             }
-            else
-                tempProcess.setPrinter_cycles_to_complete(1);
+            else{
+                tempProcess.setPrinter_cycles_processed(1);
+                System.out.printf("Printer ciclo realizado processo %d Atual: %d\n", tempProcess.getId(), tempProcess.getPrinter_cycles_processed());
+            }
+            }
         }
     }
     
 
     @Override
     public void run() {
-        while(true){
+        while(!stop){
+            try {
+                TimeUnit.MILLISECONDS.sleep(210);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Despachante.class.getName()).log(Level.SEVERE, null, ex);
+            }
             processing();
         }
     }

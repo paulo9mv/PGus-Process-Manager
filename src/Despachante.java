@@ -1,9 +1,19 @@
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Despachante implements Runnable{
     private Core core;
     private Process processToCore;
     private Disk disk;
+    private Printer printer;
+    private Scheduling scheduling;
+
+    public LinkedList<Process> completedProcess = new LinkedList<Process>();
+    
+    public boolean stop = false;
 
     public Core getCore() {
         return core;
@@ -20,13 +30,7 @@ public class Despachante implements Runnable{
     public Scheduling getScheduling() {
         return scheduling;
     }
-    private Printer printer;
-    private Scheduling scheduling;
-
-    public boolean stop = false;
-
-    public LinkedList<Process> completedProcess = new LinkedList<Process>();
-
+    
     public void inicialize(){
         this.core = new Core(this);
         this.disk = new Disk(this);
@@ -35,24 +39,35 @@ public class Despachante implements Runnable{
     }
     
     public void sendToCore(){
-        System.out.printf("Despachante Thread\n");
-        if(!core.isBusy() && scheduling.getnextProcess() != null)
-            core.toProcess(scheduling.getnextProcess());
+        
+        processToCore = scheduling.getnextProcess();
+        if(processToCore == null){
+            System.out.printf("Escalonador vazio!\n");
+        }
+        if(!core.isBusy() && processToCore != null){
+            System.out.printf("Enviando processo %d para a CPU\n", processToCore.getId());
+            scheduling.apply();
+            core.toProcess(processToCore);
+        }
     }
 
     public void toScheduling(Process process){
-        if(!process.isDone())
+        if(!process.isDone()){
             scheduling.insertnewProcess(process);
+            System.out.printf("Enviando processo %d para o escalonador\n", process.getId());
+        }
         else
             completedProcess.addLast(process);
     }
 
-    
-    
 
     public void receiveBlockedProcess(Process process){
         if(!process.isDone()){
+            System.out.printf("Enviando processo %d para o escalonador\n",process.getId());
             scheduling.insertnewProcess(process);
+        }
+        else{
+            System.out.printf("Process "+process.getId()+" completed!");
         }
     }
 
@@ -60,18 +75,29 @@ public class Despachante implements Runnable{
 
     public void fromCore(Process process, int flag){
         if(flag == Core.PRINTER){
+            System.out.printf("Enviando processo %d para printer.\n",process.getId());
             printer.newProcessPrinter(process);
         }
         else if(flag == Core.DISK){
+            System.out.printf("Enviando processo %d para disk.\n",process.getId());
             disk.newProcessDisk(process);
         }
-        else
-            System.out.println("Process " +process.getId()+" completed!");
+        else{
+            process.setState(Process.READY);
+            System.out.println("Process " +process.getId()+" completed!\n");
+        }
     }
 
     @Override
     public void run() {
-        while(true){
+        while(!stop){
+           
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(230);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Despachante.class.getName()).log(Level.SEVERE, null, ex);
+            }
             sendToCore();
         }
     }

@@ -1,4 +1,5 @@
 public class Process{
+    public static final int END = 0;
     public static final int IN_EXECUTION = 1;
     public static final int READY = 2;
     public static final int BLOCKED = 3;
@@ -56,7 +57,7 @@ public class Process{
     }
 
     public void setcycles_to_complete(int cycles_to_complete) {
-        this.cycles_to_complete += cycles_to_complete;
+        this.cycles_to_complete = cycles_to_complete;
     }
 
     public boolean hasPrinter() {
@@ -104,7 +105,7 @@ public class Process{
     }
 
     public void setcycles_processed(int cycles_processed) {
-        this.cycles_processed = cycles_processed;
+        this.cycles_processed += cycles_processed;
     }
 
     public int getPrinter_cycles_processed() {
@@ -112,7 +113,7 @@ public class Process{
     }
 
     public void setPrinter_cycles_processed(int printer_cycles_processed) {
-        this.printer_cycles_processed = printer_cycles_processed;
+        this.printer_cycles_processed += printer_cycles_processed;
     }
 
     public int getDisk_cycles_processed() {
@@ -124,17 +125,17 @@ public class Process{
     }
 
     public boolean diskComplete(){
-        if(disk_cycles_processed - disk_cycles_to_complete == 0)
+        if(disk_cycles_processed >= disk_cycles_to_complete)
             return true;
         return false;
     }
     public boolean printerComplete(){
-        if(printer_cycles_processed - printer_cycles_to_complete == 0)
+        if(printer_cycles_processed >= printer_cycles_to_complete)
             return true;
         return false;
     }
     public boolean CPUComplete(){
-        if(cycles_processed - cycles_to_complete == 0)
+        if(cycles_processed >= cycles_to_complete)
             return true;
         return false;
     }
