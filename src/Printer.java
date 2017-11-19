@@ -6,32 +6,32 @@ import java.util.logging.Logger;
 public class Printer implements Runnable{
     private LinkedList<Process> list = new LinkedList<Process>();
     private Process tempProcess;
-    private Despachante despachante;
+    private Manager manager;
     private Random mRandom = new Random();
 
     public boolean stop = false;
 
-    public Printer(Despachante d){
-        this.despachante = d;
+    public Printer(Manager d){
+        this.manager = d;
     }
 
     public void newProcessPrinter(Process process){
         list.addLast(process);
     }
 
-    public void processing(){       
+    public void processing(){
         if(!list.isEmpty()){
             tempProcess = list.getFirst();
-            
+
             tempProcess.setPrinter_cycles_processed(1);
-            
+
             if(mRandom.nextInt() < 20 || tempProcess.printerComplete()){
-                despachante.receiveBlockedProcess(tempProcess);
+                manager.receiveBlockedProcess(tempProcess);
                 list.removeFirst();
             }
         }
     }
-    
+
 
     @Override
     public void run() {
@@ -39,7 +39,7 @@ public class Printer implements Runnable{
             try {
                 TimeUnit.MILLISECONDS.sleep(210);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Despachante.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
             processing();
         }

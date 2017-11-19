@@ -4,28 +4,28 @@ import java.util.Random;
 public class Scheduling implements Runnable{
     private LinkedList<Process> list = new LinkedList<Process>();
     private Process nextProcess;
-    private Despachante despachante;
+    private Manager manager;
 
     private int current_Algorithm;
 
-    public Scheduling(Despachante d){
-        this.despachante = d;
+    public Scheduling(Manager d){
+        this.manager = d;
     }
-    
+
     public void apply(){
         if(!list.isEmpty())
         this.list.removeFirst();
-       
+
     }
-    
+
     public Process getnextProcess(){
         nextProcess = null;
-        
+
         try{
         this.nextProcess = this.list.getFirst();
         }
-        catch(Exception NoSuchElementException){    
-           
+        catch(Exception NoSuchElementException){
+
         }
         return nextProcess;
     }
@@ -38,7 +38,7 @@ public class Scheduling implements Runnable{
 
     @Override
     public void run() {
-        
+
     }
 
 }

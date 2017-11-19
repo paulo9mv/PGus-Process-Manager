@@ -6,28 +6,28 @@ import java.util.logging.Logger;
 public class Disk implements Runnable{
     private LinkedList<Process> list = new LinkedList<Process>();
     private Process tempProcess;
-    private Despachante despachante;
+    private Manager manager;
     private Random mRandom = new Random();
 
     public boolean stop = false;
     public boolean first = true;
 
-    public Disk(Despachante d){
-        this.despachante = d;
+    public Disk(Manager d){
+        this.manager = d;
     }
 
     public void newProcessDisk(Process process){
         list.addLast(process);
     }
 
-    public void processing(){ 
+    public void processing(){
         if(!list.isEmpty()){
             tempProcess = list.getFirst();
-        
+
             tempProcess.setDisk_cycles_processed(1);
-        
+
             if(mRandom.nextInt() < 20 || tempProcess.diskComplete()){
-                despachante.receiveBlockedProcess(tempProcess);
+                manager.receiveBlockedProcess(tempProcess);
                 list.removeFirst();
             }
         }
@@ -39,11 +39,11 @@ public class Disk implements Runnable{
             try {
                 TimeUnit.MILLISECONDS.sleep(220);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Despachante.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
             processing();
         }
-       
+
     }
 
 }

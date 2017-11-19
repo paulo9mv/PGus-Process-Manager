@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 public class Core implements Runnable{
     private int quantum;
     private Process actual_process;
-    private Despachante despachante;
+    private Manager manager;
 
     public final static int PRINTER = 1;
     public final static int DISK = 2;
@@ -18,8 +18,8 @@ public class Core implements Runnable{
     private boolean busy = false;
     public boolean stop = false;
 
-    public Core(Despachante d){
-        this.despachante = d;
+    public Core(Manager d){
+        this.manager = d;
     }
 
     public int getQuantum() {
@@ -36,21 +36,21 @@ public class Core implements Runnable{
 
     private void ioBlock(int flag){
         actual_process.setState(Process.BLOCKED);
-        despachante.fromCore(actual_process, flag);
+        manager.fromCore(actual_process, flag);
         busy = false;
     }
 
     public void toProcess(Process process){
         if(!busy){
             actual_process = process;
-            busy = true;    
+            busy = true;
         }
     }
 
     private void processing(){
         if(busy){
             actual_process.setState(Process.IN_EXECUTION);
-            
+
             while(actual_process.getState() == Process.IN_EXECUTION){
             if(actual_process.isDone())
                 ioBlock(Core.END);
@@ -75,7 +75,7 @@ public class Core implements Runnable{
                     break;
                 }
             }
-            
+
             }
         }
     }
@@ -86,7 +86,7 @@ public class Core implements Runnable{
             try {
                 TimeUnit.MILLISECONDS.sleep(200);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Despachante.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
             processing();
         }
