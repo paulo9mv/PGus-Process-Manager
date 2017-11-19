@@ -40,7 +40,7 @@ public class Core implements Runnable{
     }
 
     public void toProcess(Process process){
-        System.out.println("Core nao ocupado, startando");
+       // System.out.println("Core nao ocupado, startando");
         if(!busy){
             actual_process = process;
             busy = true;    

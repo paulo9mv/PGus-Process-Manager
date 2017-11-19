@@ -18,42 +18,18 @@ public class Disk implements Runnable{
 
     public void newProcessDisk(Process process){
         list.addLast(process);
-        if(first){
-            tempProcess = process;
-            first = false;
-        }
     }
 
     public void processing(){ 
-            if(!list.isEmpty()){
-                System.out.printf("Disco Executando Processo %d\n", tempProcess.getId());
-            if(tempProcess.diskComplete()){
+        if(!list.isEmpty()){
+            tempProcess = list.getFirst();
+        
+            tempProcess.setDisk_cycles_processed(1);
+        
+            if(mRandom.nextInt() < 20 || tempProcess.diskComplete()){
                 despachante.receiveBlockedProcess(tempProcess);
-
-                try{
-                tempProcess = list.removeFirst();
-                }
-                catch(Exception NoSuchElementException){
-                    
-                }
+                list.removeFirst();
             }
-            else{
-                System.out.printf("Disco nao completo -> %d %d\n", tempProcess.getDisk_cycles_processed(), tempProcess.getDisk_cycles_to_complete());
-                if(mRandom.nextInt(100) < 5){  //Random pause on process request I/O
-                despachante.receiveBlockedProcess(tempProcess);
-
-                 try{
-                tempProcess = list.removeFirst();
-                }
-                catch(Exception NoSuchElementException){
-                    
-                }
-            }
-            else
-                tempProcess.setDisk_cycles_processed(1);
-            }
-
-            
         }
     }
 

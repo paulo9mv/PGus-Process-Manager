@@ -54,7 +54,6 @@ public class Despachante implements Runnable{
     public void toScheduling(Process process){
         if(!process.isDone()){
             scheduling.insertnewProcess(process);
-            System.out.printf("Enviando processo %d para o escalonador\n", process.getId());
         }
         else
             completedProcess.addLast(process);
@@ -67,7 +66,7 @@ public class Despachante implements Runnable{
             scheduling.insertnewProcess(process);
         }
         else{
-            System.out.printf("Process "+process.getId()+" completed!");
+            System.out.printf("Process "+process.getId()+" completed! %d %d %d\n",  process.getcycles_processed(), process.getDisk_cycles_processed(), process.getPrinter_cycles_processed());
         }
     }
 
@@ -84,7 +83,7 @@ public class Despachante implements Runnable{
         }
         else{
             process.setState(Process.READY);
-            System.out.println("Process " +process.getId()+" completed!\n");
+            System.out.printf("Process " +process.getId()+" completed! %d %d %d\n", process.getcycles_processed(), process.getDisk_cycles_processed(), process.getPrinter_cycles_processed());
         }
     }
 

@@ -18,41 +18,17 @@ public class Printer implements Runnable{
 
     public void newProcessPrinter(Process process){
         list.addLast(process);
-        if(first){
-            tempProcess = process;
-            first = false;
-        }
     }
 
     public void processing(){       
-            if(!list.isEmpty()){
-               System.out.printf("Impressora Executando Processo %d\n", tempProcess.getId());
-            if(tempProcess.printerComplete()){
+        if(!list.isEmpty()){
+            tempProcess = list.getFirst();
+        
+            tempProcess.setPrinter_cycles_processed(1);
+        
+            if(mRandom.nextInt() < 20 || tempProcess.printerComplete()){
                 despachante.receiveBlockedProcess(tempProcess);
-                
-                try{
-                tempProcess = list.removeFirst();
-                }
-                catch(Exception NoSuchElementException){
-                    tempProcess = null;
-                }
-            }
-            
-            if(tempProcess != null){
-            if(mRandom.nextInt(100) < 5){  //Random pause on process request I/O
-                despachante.receiveBlockedProcess(tempProcess);
-
-                 try{
-                tempProcess = list.removeFirst();
-                }
-                catch(Exception NoSuchElementException){
-                    
-                }
-            }
-            else{
-                tempProcess.setPrinter_cycles_processed(1);
-                System.out.printf("Printer ciclo realizado processo %d Atual: %d\n", tempProcess.getId(), tempProcess.getPrinter_cycles_processed());
-            }
+                list.removeFirst();
             }
         }
     }
