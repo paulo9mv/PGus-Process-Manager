@@ -10,7 +10,6 @@ public class Printer implements Runnable{
     private Random mRandom = new Random();
 
     public boolean stop = false;
-    public boolean first = true;
 
     public Printer(Despachante d){
         this.despachante = d;
@@ -23,9 +22,9 @@ public class Printer implements Runnable{
     public void processing(){       
         if(!list.isEmpty()){
             tempProcess = list.getFirst();
-        
+            
             tempProcess.setPrinter_cycles_processed(1);
-        
+            
             if(mRandom.nextInt() < 20 || tempProcess.printerComplete()){
                 despachante.receiveBlockedProcess(tempProcess);
                 list.removeFirst();

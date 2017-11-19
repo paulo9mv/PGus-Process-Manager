@@ -15,17 +15,17 @@ public class Scheduling implements Runnable{
     public void apply(){
         if(!list.isEmpty())
         this.list.removeFirst();
-        if(list.isEmpty())
-            System.out.printf("Removeu. Agora escalonador vazio!\n");
+       
     }
     
     public Process getnextProcess(){
+        nextProcess = null;
+        
         try{
         this.nextProcess = this.list.getFirst();
         }
         catch(Exception NoSuchElementException){    
-            System.out.printf("Nao ha nada no escalonador\n");
-            return null;
+           
         }
         return nextProcess;
     }
@@ -33,7 +33,7 @@ public class Scheduling implements Runnable{
     public void insertnewProcess(Process newProcess){
         newProcess.setState(Process.READY);
         this.list.addLast(newProcess);
-        System.out.printf("Processo %d adicionado! CPU:%d DISK:%d PRINTER:%d\n", newProcess.getId(), newProcess.getcycles_processed(), newProcess.getDisk_cycles_processed(),newProcess.getPrinter_cycles_processed());
+        //System.out.printf("Processo %d adicionado! CPU:%d DISK:%d PRINTER:%d\n", newProcess.getId(), newProcess.getcycles_processed(), newProcess.getDisk_cycles_processed(),newProcess.getPrinter_cycles_processed());
     }
 
     @Override
