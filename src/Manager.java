@@ -41,7 +41,7 @@ public class Manager implements Runnable{
     public void sendToCore(){
 
         processToCore = scheduling.getnextProcess();
-       /* if(processToCore == null){
+        /*if(processToCore == null){
             System.out.printf("Escalonador vazio!\n");
         }*/
         if(!core.isBusy() && processToCore != null){
