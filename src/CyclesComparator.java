@@ -15,6 +15,7 @@ public class CyclesComparator implements Comparator<Process>{
 
     @Override
     public int compare(Process o1, Process o2) {
+       
         int cyclesToEnd1 = o1.getDisk_cycles_to_complete() - o1.getDisk_cycles_processed();
         int cyclesToEnd2 = o2.getDisk_cycles_to_complete() - o2.getDisk_cycles_processed();
         
@@ -29,6 +30,6 @@ public class CyclesComparator implements Comparator<Process>{
         if(cyclesToEnd1 + diskToEnd1 + printerToEnd1 < cyclesToEnd2 + diskToEnd2 + printerToEnd2)
             return -1;
         return 0;
-    }
-    
+       
+    }   
 }

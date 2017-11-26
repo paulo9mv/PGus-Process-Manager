@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Core implements Runnable{
-    private int quantum;
+    private int quantum = 20000;
     private Process actual_process;
     private Manager manager;
 
@@ -17,6 +17,7 @@ public class Core implements Runnable{
 
     private boolean busy = false;
     public boolean stop = false;
+    private boolean preemptive = true;
 
     public Core(Manager d){
         this.manager = d;
@@ -51,6 +52,7 @@ public class Core implements Runnable{
         if(busy){
             actual_process.setState(Process.IN_EXECUTION);
 
+            if(!preemptive){
             while(actual_process.getState() == Process.IN_EXECUTION){
             if(actual_process.isDone())
                 ioBlock(Core.END);
@@ -75,16 +77,43 @@ public class Core implements Runnable{
                     break;
                 }
             }
-
             }
         }
-    }
+            else if(preemptive){
+                long start = System.currentTimeMillis();                                                
+                    do{
+            if(actual_process.isDone())
+                ioBlock(Core.END);
+            if(!actual_process.CPUComplete()){
+                actual_process.setcycles_processed(1);
+            }
+            if(mRandom.nextInt(100) < 20 && !actual_process.printerComplete()){
+                this.ioBlock(Core.PRINTER);
+                break;
+            }
+            else if(mRandom.nextInt(100) < 20 && !actual_process.diskComplete()){
+                this.ioBlock(Core.DISK);
+                break;
+            }
+            if(actual_process.CPUComplete()){
+                if(!actual_process.diskComplete()){
+                    ioBlock(Core.DISK);
+                    break;
+                }
+                else if(!actual_process.printerComplete()){
+                    ioBlock(Core.PRINTER);
+                    break;
+                }     
+            }
+            }while((System.currentTimeMillis() - start < quantum) && actual_process.getState() == Process.IN_EXECUTION);
+        }
+    }}
 
     @Override
     public void run() {
         while(!stop){
             try {
-                TimeUnit.MILLISECONDS.sleep(200);
+                TimeUnit.MILLISECONDS.sleep(50);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }

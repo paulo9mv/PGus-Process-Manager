@@ -39,13 +39,11 @@ public class Manager implements Runnable{
     }
 
     public void sendToCore(){
-
         processToCore = scheduling.getnextProcess();
-        /*if(processToCore == null){
-            System.out.printf("Escalonador vazio!\n");
-        }*/
+      
         if(!core.isBusy() && processToCore != null){
             //System.out.printf("Enviando processo %d para a CPU\n", processToCore.getId());
+            
             scheduling.apply();
             core.toProcess(processToCore);
         }
@@ -93,9 +91,8 @@ public class Manager implements Runnable{
     public void run() {
         while(!stop){
 
-
             try {
-                TimeUnit.MILLISECONDS.sleep(230);
+                TimeUnit.MILLISECONDS.sleep(5);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
