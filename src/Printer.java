@@ -20,7 +20,7 @@ public class Printer implements Runnable{
         list.add(process);
     }
 
-    public void processing(){
+    private void processing(){
         if(!list.isEmpty()){
             tempProcess = list.element();
 
@@ -33,7 +33,6 @@ public class Printer implements Runnable{
         }
     }
 
-
     @Override
     public void run() {
         while(!stop){
@@ -45,6 +44,4 @@ public class Printer implements Runnable{
             processing();
         }
     }
-
-
 }

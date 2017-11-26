@@ -11,7 +11,6 @@ public class Disk implements Runnable{
     private Random mRandom = new Random();
 
     public boolean stop = false;
-    public boolean first = true;
 
     public Disk(Manager d){
         this.manager = d;
@@ -21,7 +20,7 @@ public class Disk implements Runnable{
         list.add(process);      
     }
 
-    public void processing(){
+    private void processing(){
         if(!list.isEmpty()){
             tempProcess = list.element();
 
@@ -44,7 +43,5 @@ public class Disk implements Runnable{
             }
             processing();
         }
-
     }
-
 }

@@ -31,19 +31,17 @@ public class Manager implements Runnable{
         return scheduling;
     }
 
-    public void inicialize(){
-        this.core = new Core(this);
+    public void inicialize(boolean preemptive, int algorithm){
+        this.core = new Core(this, preemptive);
         this.disk = new Disk(this);
         this.printer = new Printer(this);
-        this.scheduling = new Scheduling(this);
+        this.scheduling = new Scheduling(this, algorithm);
     }
 
     public void sendToCore(){
         processToCore = scheduling.getnextProcess();
       
-        if(!core.isBusy() && processToCore != null){
-            //System.out.printf("Enviando processo %d para a CPU\n", processToCore.getId());
-            
+        if(!core.isBusy() && processToCore != null){                     
             scheduling.apply();
             core.toProcess(processToCore);
         }
@@ -59,31 +57,27 @@ public class Manager implements Runnable{
 
 
     public void receiveBlockedProcess(Process process){
-        if(!process.isDone()){
-            //System.out.printf("Enviando processo %d para o escalonador\n",process.getId());
-            scheduling.insertnewProcess(process);
-        }
-        else{
-            System.out.printf("Process "+process.getId()+" completed! %d %d %d || %d %d %d\n",  process.getcycles_to_complete(), process.getDisk_cycles_to_complete(), process.getPrinter_cycles_to_complete()
-                    ,process.getcycles_processed(), process.getDisk_cycles_processed(), process.getPrinter_cycles_processed());
+        if(!process.isDone())
+            scheduling.insertnewProcess(process);        
+        else{            
+            System.out.printf(process.getName() + " " + process.isDone() + "\n");
+            qtd++;
         }
     }
 
-
+    public int qtd = 0;
 
     public void fromCore(Process process, int flag){
-        if(flag == Core.PRINTER){
-           // System.out.printf("Enviando processo %d para printer.\n",process.getId());
+        if(flag == Core.PRINTER)
             printer.newProcessPrinter(process);
-        }
-        else if(flag == Core.DISK){
-           // System.out.printf("Enviando processo %d para disk.\n",process.getId());
+        else if(flag == Core.DISK)
             disk.newProcessDisk(process);
-        }
+        
         else{
             process.setState(Process.READY);
             System.out.printf("Process "+process.getId()+" completed! %d %d %d || %d %d %d\n",  process.getcycles_to_complete(), process.getDisk_cycles_to_complete(), process.getPrinter_cycles_to_complete()
                     ,process.getcycles_processed(), process.getDisk_cycles_processed(), process.getPrinter_cycles_processed());
+            qtd++;
         }
     }
 
