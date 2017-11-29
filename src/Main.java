@@ -10,7 +10,7 @@ public class Main{
     
     public static void main(String args[]) throws InterruptedException{
         Manager manager = new Manager();
-        manager.inicialize(false, 0);
+        manager.inicialize(false, 0, false);
         new Thread(manager).start();
 
         new Thread(manager.getCore()).start();
@@ -22,13 +22,13 @@ public class Main{
         Process[] mProcess = new Process[1010];
         Random mRandom = new Random();
        
-        for(int i = 0; i < 20; i++){
+        for(int i = 0; i < 200; i++){
             mProcess[i] = new Process(i, "Process" + i, mRandom.nextInt(10), mRandom.nextInt(10), mRandom.nextInt(10));
 
             manager.toScheduling(mProcess[i]);
         }
-        Thread.sleep(10000);
-            System.out.printf("%d\n",manager.qtd);
+        Thread.sleep(4000);
+            System.out.printf("%d\n",manager.completedProcess.size());
        
     }
 }

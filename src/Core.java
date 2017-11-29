@@ -113,7 +113,7 @@ public class Core implements Runnable{
     public void run() {
         while(!stop){
             try {
-                TimeUnit.MILLISECONDS.sleep(50);
+                TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }

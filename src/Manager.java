@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,9 +12,11 @@ public class Manager implements Runnable{
     private Printer printer;
     private Scheduling scheduling;
 
-    public LinkedList<Process> completedProcess = new LinkedList<Process>();
+    public ConcurrentLinkedQueue<Process> completedProcess = new ConcurrentLinkedQueue<Process>();
 
     public boolean stop = false;
+    public boolean mono;
+     public int qtd = 0;
 
     public Core getCore() {
         return core;
@@ -31,19 +34,25 @@ public class Manager implements Runnable{
         return scheduling;
     }
 
-    public void inicialize(boolean preemptive, int algorithm){
+    public void inicialize(boolean preemptive, int algorithm, boolean mono){
         this.core = new Core(this, preemptive);
         this.disk = new Disk(this);
         this.printer = new Printer(this);
-        this.scheduling = new Scheduling(this, algorithm);
+        this.scheduling = new Scheduling(this, algorithm, mono);
+        this.mono = mono;
     }
 
     public void sendToCore(){
         processToCore = scheduling.getnextProcess();
       
-        if(!core.isBusy() && processToCore != null){                     
+        if(!core.isBusy() && processToCore != null){
+            if(!mono){
             scheduling.apply();
             core.toProcess(processToCore);
+            }
+            else if(processToCore.getState() != Process.BLOCKED){
+                core.toProcess(processToCore);
+            }
         }
     }
 
@@ -51,33 +60,40 @@ public class Manager implements Runnable{
         if(!process.isDone()){
             scheduling.insertnewProcess(process);
         }
-        else
-            completedProcess.addLast(process);
+        else{         
+            end(process);
+        }
     }
 
 
     public void receiveBlockedProcess(Process process){
         if(!process.isDone())
-            scheduling.insertnewProcess(process);        
+            if(!mono)
+                scheduling.insertnewProcess(process);
+            else
+                process.setState(Process.READY);
         else{            
-            System.out.printf(process.getName() + " " + process.isDone() + "\n");
-            qtd++;
+            end(process);
+            if(mono)
+                this.scheduling.setCurrentProcess();
         }
     }
 
-    public int qtd = 0;
-
+    private void end(Process process){
+        this.completedProcess.add(process);
+        System.out.printf("%s completed! %b\n", process.getName(), process.isDone());
+    }
+    
     public void fromCore(Process process, int flag){
         if(flag == Core.PRINTER)
             printer.newProcessPrinter(process);
         else if(flag == Core.DISK)
-            disk.newProcessDisk(process);
-        
+            disk.newProcessDisk(process);       
         else{
+            if(mono)
+                this.scheduling.setCurrentProcess();
             process.setState(Process.READY);
-            System.out.printf("Process "+process.getId()+" completed! %d %d %d || %d %d %d\n",  process.getcycles_to_complete(), process.getDisk_cycles_to_complete(), process.getPrinter_cycles_to_complete()
-                    ,process.getcycles_processed(), process.getDisk_cycles_processed(), process.getPrinter_cycles_processed());
-            qtd++;
+            end(process);
         }
     }
 
@@ -86,7 +102,7 @@ public class Manager implements Runnable{
         while(!stop){
 
             try {
-                TimeUnit.MILLISECONDS.sleep(5);
+                TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
