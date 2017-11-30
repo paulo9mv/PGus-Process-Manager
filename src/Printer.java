@@ -26,7 +26,7 @@ public class Printer implements Runnable{
 
             tempProcess.setPrinter_cycles_processed(1);
 
-            if(mRandom.nextInt() < 20 || tempProcess.printerComplete()){
+            if(mRandom.nextInt(100) < 20 || tempProcess.printerComplete()){
                 manager.receiveBlockedProcess(tempProcess);
                 list.poll();
             }

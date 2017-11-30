@@ -5,23 +5,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Core implements Runnable{
-    private int quantum = 2000;
+    private int quantum = 1000;
     private Process actual_process;
     private Manager manager;
 
     public final static int PRINTER = 1;
     public final static int DISK = 2;
     public final static int END = 3;
+    public final static int QUANTUM = 4;
 
     private Random mRandom = new Random();
 
     private boolean busy = false;
     public boolean stop = false;
     private boolean preemptive;
+    public int id;
 
-    public Core(Manager d, boolean b){
+    public Core(Manager d, boolean b, int id){
         this.manager = d;
         this.preemptive = b;
+        this.id = id;
     }
     public int getQuantum() {
         return quantum;
@@ -44,7 +47,8 @@ public class Core implements Runnable{
         }
     }
     private void preemptive(){
-        long start = System.currentTimeMillis();                                                
+        long start = System.currentTimeMillis();
+        long end = 0;
         
         do{
             if(actual_process.isDone())
@@ -70,7 +74,14 @@ public class Core implements Runnable{
                     break;
                 }     
             }
-        }while((System.currentTimeMillis() - start < quantum) && actual_process.getState() == Process.IN_EXECUTION);
+            end = System.currentTimeMillis();
+        }while((end - start < quantum) && actual_process.getState() == Process.IN_EXECUTION);
+        
+        if(end - start < quantum){
+            if(actual_process.getState() == Process.IN_EXECUTION)
+                ioBlock(Core.QUANTUM);
+        }
+        
     }
     private void nonPreemptive(){
         while(actual_process.getState() == Process.IN_EXECUTION){
@@ -99,9 +110,11 @@ public class Core implements Runnable{
             }
         }
     }
+    
     private void processing(){
         if(busy){
             actual_process.setState(Process.IN_EXECUTION);
+            //System.out.printf(this.id + " processing\n");
             if(!preemptive)
                 this.nonPreemptive();         
             else if(preemptive)

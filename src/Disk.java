@@ -26,7 +26,7 @@ public class Disk implements Runnable{
 
             tempProcess.setDisk_cycles_processed(1);
 
-            if(mRandom.nextInt() < 20 || tempProcess.diskComplete()){
+            if(mRandom.nextInt(100) < 20 || tempProcess.diskComplete()){
                 manager.receiveBlockedProcess(tempProcess);
                 list.poll();
             }
