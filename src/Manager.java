@@ -19,8 +19,8 @@ public class Manager implements Runnable{
     public boolean stop = false;
     public boolean mono;
     public boolean multicore;
-    public boolean turn = false;
-     public int qtd = 0;
+    private boolean turn = false;
+    private int totalProcess;
 
     public Core getCore() {
         return core;
@@ -63,42 +63,38 @@ public class Manager implements Runnable{
         processToCore = scheduling.getnextProcess();
       
         if(!this.multicore){
-        if(!core.isBusy() && processToCore != null){
-            if(!mono){
-            scheduling.apply();
-            core.toProcess(processToCore);
-            }
-            else if(processToCore.getState() != Process.BLOCKED){
-                core.toProcess(processToCore);
+            if(!core.isBusy() && processToCore != null){
+                if(!mono){
+                    scheduling.apply();
+                    core.toProcess(processToCore);
+                }
+                else if(processToCore.getState() != Process.BLOCKED)
+                    core.toProcess(processToCore);
             }
         }
-        }
-        else{
+        else
+        {
             this.turn = turn();
-            //System.out.printf("%b\n",turn);
             if(turn && !core.isBusy() && processToCore != null){
-                //System.out.printf("Core1\n");
-            if(!mono){
-            scheduling.apply();
-            core.toProcess(processToCore);
+                if(!mono){
+                    scheduling.apply();
+                    core.toProcess(processToCore);
+                }
+                else if(processToCore.getState() != Process.BLOCKED)
+                    core.toProcess(processToCore);
             }
-            else if(processToCore.getState() != Process.BLOCKED){
-                core.toProcess(processToCore);
-            }
-        }
-           else if(!turn && !core2.isBusy() && processToCore != null){
-               //System.out.printf("Core2\n");
-            if(!mono){
-            scheduling.apply();
-            core2.toProcess(processToCore);
-            }
-            else if(processToCore.getState() != Process.BLOCKED){
-                core2.toProcess(processToCore);
+            else if(!turn && !core2.isBusy() && processToCore != null){
+
+                if(!mono){
+                    scheduling.apply();
+                    core2.toProcess(processToCore);
+                }
+                else if(processToCore.getState() != Process.BLOCKED)
+                    core2.toProcess(processToCore);       
             }
         }
-        }
-        
-    }
+
+    }//End of sendToCore()
 
     public void toScheduling(Process process){
         if(!process.isDone())
@@ -121,10 +117,14 @@ public class Manager implements Runnable{
         }
     }
 
-    public int totalProcess;
+
     
     public void setTotalProcess(int p){
         this.totalProcess = p;
+    }
+
+    public int getTotalProcess(){
+        return this.totalProcess;
     }
     
     private void end(Process process){
@@ -133,11 +133,11 @@ public class Manager implements Runnable{
         if(this.completedProcess.size() == totalProcess){
             System.out.printf("\nAll process concluded! %d " + (System.currentTimeMillis() - start) + "\n", totalProcess);
             this.stop = true;
-            this.core.stop = true;
-            this.disk.stop = true;
-            this.printer.stop = true;
+            this.core.setStop(true);
+            this.disk.setStop(true);
+            this.printer.setStop(true);
             if(multicore)
-                this.core2.stop = true;
+                this.core2.setStop(true);
             
         }
     }

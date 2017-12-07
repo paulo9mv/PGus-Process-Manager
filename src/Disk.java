@@ -9,8 +9,7 @@ public class Disk implements Runnable{
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
-
-    public boolean stop = false;
+    private boolean stop = false;
 
     public Disk(Manager d){
         this.manager = d;
@@ -18,6 +17,13 @@ public class Disk implements Runnable{
 
     public void newProcessDisk(Process process){
         list.add(process);      
+    }
+
+    public void setStop(boolean s){
+        this.stop = s;
+    }
+    public boolean isStop(){
+        return this.stop;
     }
 
     private void processing(){
@@ -35,7 +41,7 @@ public class Disk implements Runnable{
 
     @Override
     public void run() {
-        while(!stop){
+        while(!isStop()){
             try {
                 TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {

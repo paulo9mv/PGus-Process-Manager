@@ -5,27 +5,37 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Core implements Runnable{
-    private int quantum = 1000;
-    private Process actual_process;
-    private Manager manager;
-
     public final static int PRINTER = 1;
     public final static int DISK = 2;
     public final static int END = 3;
     public final static int QUANTUM = 4;
 
+    private int quantum = 1000;
+    private Process actual_process;
+    private Manager manager;
+    
     private Random mRandom = new Random();
 
     private boolean busy = false;
-    public boolean stop = false;
+    private boolean stop = false;
     private boolean preemptive;
-    public int id;
+    private int id;
 
     public Core(Manager d, boolean b, int id){
         this.manager = d;
         this.preemptive = b;
         this.id = id;
     }
+    public int getId(){
+        return this.id;
+    }
+    public void setStop(boolean s){
+        this.stop = s;
+    }
+    public boolean isStop(){
+        return this.stop;
+    }
+
     public int getQuantum() {
         return quantum;
     }

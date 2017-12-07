@@ -9,8 +9,7 @@ public class Printer implements Runnable{
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
-
-    public boolean stop = false;
+    private boolean stop = false;
 
     public Printer(Manager d){
         this.manager = d;
@@ -18,6 +17,13 @@ public class Printer implements Runnable{
 
     public void newProcessPrinter(Process process){
         list.add(process);
+    }
+
+    public void setStop(boolean s){
+        this.stop = s;
+    }
+    public boolean isStop(){
+        return this.stop;
     }
 
     private void processing(){
