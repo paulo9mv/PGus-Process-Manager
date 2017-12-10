@@ -2,8 +2,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Manager implements Runnable{
     private Core core;
@@ -13,16 +11,16 @@ public class Manager implements Runnable{
     private Printer printer;
     private Scheduling scheduling;
     public long start;
+    public int totalProcess;
 
     public ConcurrentLinkedQueue<Process> completedProcess = new ConcurrentLinkedQueue<Process>();
 
     public boolean stop = false;
     public boolean mono;
     public boolean multicore;
-    private boolean turn = false;
-    private int totalProcess;
+    public boolean turn = false;
 
-    public Core getCore() {
+    public Core getCore(){
         return core;
     }
     public Core getCore2(){
@@ -41,6 +39,13 @@ public class Manager implements Runnable{
         return scheduling;
     }
 
+    /**
+     * Inicia o despachante com parâmetros definidos pelo usuário.
+     * @param preemptive Determina se o sistema é preemptivo.
+     * @param algorithm Determina o algoritmo a ser usado no escalonamento.
+     * @param mono Determina se o sistema é monoprogramado.
+     * @param multicore Determina se o sistema é multinúcleo.
+     */
     public void inicialize(boolean preemptive, int algorithm, boolean mono, boolean multicore){
         this.core = new Core(this, preemptive, 1);
         this.multicore = multicore;
@@ -59,43 +64,51 @@ public class Manager implements Runnable{
         return this.turn;
     }
     
-    public void sendToCore(){
+    private void sendToCore(){
         processToCore = scheduling.getnextProcess();
       
         if(!this.multicore){
-            if(!core.isBusy() && processToCore != null){
-                if(!mono){
-                    scheduling.apply();
-                    core.toProcess(processToCore);
-                }
-                else if(processToCore.getState() != Process.BLOCKED)
-                    core.toProcess(processToCore);
+        if(!core.isBusy() && processToCore != null){
+            if(!mono){
+            scheduling.apply();
+            core.toProcess(processToCore);
+            }
+            else if(processToCore.getState() != Process.BLOCKED){
+                core.toProcess(processToCore);
             }
         }
-        else
-        {
+        }
+        else{
             this.turn = turn();
+            
             if(turn && !core.isBusy() && processToCore != null){
-                if(!mono){
-                    scheduling.apply();
-                    core.toProcess(processToCore);
-                }
-                else if(processToCore.getState() != Process.BLOCKED)
-                    core.toProcess(processToCore);
+            
+            if(!mono){
+            scheduling.apply();
+            core.toProcess(processToCore);
             }
-            else if(!turn && !core2.isBusy() && processToCore != null){
-
-                if(!mono){
-                    scheduling.apply();
-                    core2.toProcess(processToCore);
-                }
-                else if(processToCore.getState() != Process.BLOCKED)
-                    core2.toProcess(processToCore);       
+            else if(processToCore.getState() != Process.BLOCKED){
+                core.toProcess(processToCore);
             }
         }
+           else if(!turn && !core2.isBusy() && processToCore != null){
+            
+            if(!mono){
+            scheduling.apply();
+            core2.toProcess(processToCore);
+            }
+            else if(processToCore.getState() != Process.BLOCKED){
+                core2.toProcess(processToCore);
+            }
+        }
+        }
+        
+    }
 
-    }//End of sendToCore()
-
+    /**
+     * Método para inserir processos no escalonador.
+     * @param process Processo a ser inserido.
+     */
     public void toScheduling(Process process){
         if(!process.isDone())
             scheduling.insertnewProcess(process);
@@ -116,15 +129,13 @@ public class Manager implements Runnable{
                 this.scheduling.setCurrentProcess();
         }
     }
-
-
     
+    /**
+     * 
+     * @param p A quantidade total de processos que serão executados.
+     */
     public void setTotalProcess(int p){
         this.totalProcess = p;
-    }
-
-    public int getTotalProcess(){
-        return this.totalProcess;
     }
     
     private void end(Process process){
@@ -160,11 +171,10 @@ public class Manager implements Runnable{
     @Override
     public void run() {
         while(!stop){
-
             try {
                 TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
             sendToCore();
         }

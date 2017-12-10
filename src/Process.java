@@ -9,32 +9,27 @@ public class Process{
 
     private String name;
 
-    private int cycles_to_complete;
+    private int cyclesToComplete;
     private int cycles_processed;
 
     private boolean printer;
     private boolean disk;
 
-    private int printer_cycles_to_complete;
+    private int printerCyclesToComplete;
     private int printer_cycles_processed;
 
-    private int disk_cycles_to_complete;
+    private int diskCyclesToComplete;
     private int disk_cycles_processed;
 
     public Process(int id, String name, int cycles, int disk, int printer){
         this.id = id;
         this.name = name;
-        this.cycles_to_complete = cycles;
-        this.printer_cycles_to_complete = printer;
-        this.disk_cycles_to_complete = disk;
-
-        if(disk > 0)
-            this.disk = true;
-        if(printer > 0)
-            this.printer = true;
-
+        this.cyclesToComplete = cycles;
+        this.printerCyclesToComplete = printer;
+        this.diskCyclesToComplete = disk;
+        this.disk = disk > 0;
+        this.printer = printer > 0;
     }
-
 
     public int getId() {
         return id;
@@ -52,12 +47,12 @@ public class Process{
         this.name = name;
     }
 
-    public int getcycles_to_complete() {
-        return cycles_to_complete;
+    public int getCyclesToComplete() {
+        return cyclesToComplete;
     }
 
-    public void setcycles_to_complete(int cycles_to_complete) {
-        this.cycles_to_complete = cycles_to_complete;
+    public void setCyclesToComplete(int cycles_to_complete) {
+        this.cyclesToComplete = cycles_to_complete;
     }
 
     public boolean hasPrinter() {
@@ -76,20 +71,20 @@ public class Process{
         this.disk = disk;
     }
 
-    public int getPrinter_cycles_to_complete() {
-        return printer_cycles_to_complete;
+    public int getPrinterCyclesToComplete() {
+        return printerCyclesToComplete;
     }
 
-    public void setPrinter_cycles_to_complete(int printer_cycles_to_complete) {
-        this.printer_cycles_to_complete = printer_cycles_to_complete;
+    public void setPrinterCyclesToComplete(int printer_cycles_to_complete) {
+        this.printerCyclesToComplete = printer_cycles_to_complete;
     }
 
-    public int getDisk_cycles_to_complete() {
-        return disk_cycles_to_complete;
+    public int getDiskCyclesToComplete() {
+        return diskCyclesToComplete;
     }
 
-    public void setDisk_cycles_to_complete(int disk_cycles_to_complete) {
-        this.disk_cycles_to_complete = disk_cycles_to_complete;
+    public void setDiskCyclesToComplete(int disk_cycles_to_complete) {
+        this.diskCyclesToComplete = disk_cycles_to_complete;
     }
 
     public int getState() {
@@ -100,48 +95,40 @@ public class Process{
         this.state = state;
     }
 
-    public int getcycles_processed() {
+    public int getCyclesProcessed() {
         return cycles_processed;
     }
 
-    public void setcycles_processed(int cycles_processed) {
+    public void setCyclesProcessed(int cycles_processed) {
         this.cycles_processed += cycles_processed;
     }
 
-    public int getPrinter_cycles_processed() {
+    public int getPrinterCyclesProcessed() {
         return printer_cycles_processed;
     }
 
-    public void setPrinter_cycles_processed(int printer_cycles_processed) {
+    public void setPrinterCyclesProcessed(int printer_cycles_processed) {
         this.printer_cycles_processed += printer_cycles_processed;
     }
 
-    public int getDisk_cycles_processed() {
+    public int getDiskCyclesProcessed() {
         return disk_cycles_processed;
     }
 
-    public void setDisk_cycles_processed(int disk_cycles_processed) {
+    public void setDiskCyclesProcessed(int disk_cycles_processed) {
         this.disk_cycles_processed += disk_cycles_processed;
     }
 
     public boolean diskComplete(){
-        if(disk_cycles_processed >= disk_cycles_to_complete)
-            return true;
-        return false;
+        return disk_cycles_processed >= diskCyclesToComplete;
     }
     public boolean printerComplete(){
-        if(printer_cycles_processed >= printer_cycles_to_complete)
-            return true;
-        return false;
+        return printer_cycles_processed >= printerCyclesToComplete;
     }
     public boolean CPUComplete(){
-        if(cycles_processed >= cycles_to_complete)
-            return true;
-        return false;
+        return cycles_processed >= cyclesToComplete;
     }
     public boolean isDone(){
-        if(CPUComplete() && printerComplete() && diskComplete())
-            return true;
-        return false;
+        return CPUComplete() && printerComplete() && diskComplete();
     }
 }

@@ -9,7 +9,16 @@ public class Disk implements Runnable{
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
-    private boolean stop = false;
+
+    public boolean stop = false;
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
 
     public Disk(Manager d){
         this.manager = d;
@@ -19,18 +28,11 @@ public class Disk implements Runnable{
         list.add(process);      
     }
 
-    public void setStop(boolean s){
-        this.stop = s;
-    }
-    public boolean isStop(){
-        return this.stop;
-    }
-
     private void processing(){
         if(!list.isEmpty()){
             tempProcess = list.element();
 
-            tempProcess.setDisk_cycles_processed(1);
+            tempProcess.setDiskCyclesProcessed(1);
 
             if(mRandom.nextInt(100) < 20 || tempProcess.diskComplete()){
                 manager.receiveBlockedProcess(tempProcess);
@@ -41,7 +43,7 @@ public class Disk implements Runnable{
 
     @Override
     public void run() {
-        while(!isStop()){
+        while(!stop){
             try {
                 TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {

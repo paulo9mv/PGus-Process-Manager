@@ -1,8 +1,5 @@
-
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -13,14 +10,14 @@ public class Scheduling {
     public final static int LESSREMAINING = 3;
 
     private ConcurrentLinkedQueue<Process> list = new ConcurrentLinkedQueue<Process>();
-    private PriorityBlockingQueue<Process> priorityQueue;
+    private final PriorityBlockingQueue<Process> priorityQueue;
     private Comparator<Process> comparator;
 
     private Process nextProcess;
     private Process currentProcess;
-    private Manager manager;
+    private final Manager manager;
 
-    private int currentAlgorithm;
+    private final int currentAlgorithm;
     public boolean mono;
 
     public Scheduling(Manager d, int algorithm, boolean mono){
@@ -64,15 +61,15 @@ public class Scheduling {
             return currentProcess;
         }
         else{
-        try{
-            if (currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
-                this.nextProcess = this.list.element();
-            else if (currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)
-                nextProcess = priorityQueue.peek();
-        }
-        catch(NoSuchElementException e){
+            try{
+                if (currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
+                    this.nextProcess = this.list.element();
+                else if (currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)
+                    nextProcess = priorityQueue.peek();
+            }
+            catch(NoSuchElementException e){
             
-        }
+            }
         }
         return nextProcess;
     }
@@ -83,11 +80,10 @@ public class Scheduling {
             currentProcess = newProcess;
         }
         else{
-        if(currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
-            this.list.add(newProcess);
-        else if(currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING){           
-            this.priorityQueue.add(newProcess);                  
-        }
+            if(currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
+                this.list.add(newProcess);
+            else if(currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)          
+                this.priorityQueue.add(newProcess);                     
         }
     }
 }

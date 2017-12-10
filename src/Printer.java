@@ -9,7 +9,16 @@ public class Printer implements Runnable{
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
-    private boolean stop = false;
+
+    public boolean stop = false;
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
 
     public Printer(Manager d){
         this.manager = d;
@@ -19,18 +28,11 @@ public class Printer implements Runnable{
         list.add(process);
     }
 
-    public void setStop(boolean s){
-        this.stop = s;
-    }
-    public boolean isStop(){
-        return this.stop;
-    }
-
     private void processing(){
         if(!list.isEmpty()){
             tempProcess = list.element();
 
-            tempProcess.setPrinter_cycles_processed(1);
+            tempProcess.setPrinterCyclesProcessed(1);
 
             if(mRandom.nextInt(100) < 20 || tempProcess.printerComplete()){
                 manager.receiveBlockedProcess(tempProcess);

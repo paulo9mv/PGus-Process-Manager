@@ -1,19 +1,7 @@
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.Scanner;
 public class Main{
 
-/*
-    MONO                    MULTI
-    NAO PREEMPTIVO          NAO PREEMPTIVO/PREEMPTIVO
-    FIFO                    FIFO/ROUNDROBIN
-    LESS TIME               SHORTEST & LESS
-    SHORTEST TIME
-    */
-    
     public static void main(String args[]) throws InterruptedException{
         Manager manager = new Manager();
         
@@ -27,19 +15,15 @@ public class Main{
             new Thread(manager.getCore2()).start();
         new Thread(manager.getDisk()).start();
         new Thread(manager.getPrinter()).start();
-
-        Thread.sleep(1);
         
         Process[] mProcess = new Process[100010];
         Random mRandom = new Random();
         
         manager.start = System.currentTimeMillis();
         
-        for(int i = 0; i < process; i++){
-            mProcess[i] = new Process(i, "Process" + i, mRandom.nextInt(10), mRandom.nextInt(10), mRandom.nextInt(10));
-
-            manager.toScheduling(mProcess[i]);
-        }      
+        for(int i = 0; i < process; i++)
+            manager.toScheduling(new Process(i, "Process" + i, mRandom.nextInt(10), mRandom.nextInt(10), mRandom.nextInt(10)));
+        
     }
     
     public static int choicesProcess(Manager m){
