@@ -10,16 +10,16 @@ public class Process{
     private String name;
 
     private int cyclesToComplete;
-    private int cycles_processed;
+    private int cyclesProcessed;
 
     private boolean printer;
     private boolean disk;
 
     private int printerCyclesToComplete;
-    private int printer_cycles_processed;
+    private int printerCyclesProcessed;
 
     private int diskCyclesToComplete;
-    private int disk_cycles_processed;
+    private int diskCyclesProcessed;
 
     public Process(int id, String name, int cycles, int disk, int printer){
         this.id = id;
@@ -104,29 +104,29 @@ public class Process{
     }
 
     public int getPrinterCyclesProcessed() {
-        return printer_cycles_processed;
+        return printerCyclesProcessed;
     }
 
     public void setPrinterCyclesProcessed(int printer_cycles_processed) {
-        this.printer_cycles_processed += printer_cycles_processed;
+        this.printerCyclesProcessed += printer_cycles_processed;
     }
 
     public int getDiskCyclesProcessed() {
-        return disk_cycles_processed;
+        return diskCyclesProcessed;
     }
 
     public void setDiskCyclesProcessed(int disk_cycles_processed) {
-        this.disk_cycles_processed += disk_cycles_processed;
+        this.diskCyclesProcessed += disk_cycles_processed;
     }
 
     public boolean diskComplete(){
-        return disk_cycles_processed >= diskCyclesToComplete;
+        return diskCyclesProcessed >= diskCyclesToComplete;
     }
     public boolean printerComplete(){
-        return printer_cycles_processed >= printerCyclesToComplete;
+        return printerCyclesProcessed >= printerCyclesToComplete;
     }
     public boolean CPUComplete(){
-        return cycles_processed >= cyclesToComplete;
+        return cyclesProcessed >= cyclesToComplete;
     }
     public boolean isDone(){
         return CPUComplete() && printerComplete() && diskComplete();

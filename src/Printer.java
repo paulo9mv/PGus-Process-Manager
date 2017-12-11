@@ -1,16 +1,14 @@
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 public class Printer implements Runnable{
     private ConcurrentLinkedQueue<Process> list = new ConcurrentLinkedQueue<Process>();
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
 
-    public boolean stop = false;
+    private boolean stop = false;
 
     public boolean isStop() {
         return stop;
@@ -20,10 +18,17 @@ public class Printer implements Runnable{
         this.stop = stop;
     }
 
+    /**
+    * Construtor recebe a instância do despachante responsável pela movimentação dos processos.
+    */
     public Printer(Manager d){
         this.manager = d;
     }
 
+
+    /**
+    * Recebe um processo para ser inserido na fila da impressora.
+    */
     public void newProcessPrinter(Process process){
         list.add(process);
     }
@@ -47,7 +52,7 @@ public class Printer implements Runnable{
             try {
                 TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
             processing();
         }

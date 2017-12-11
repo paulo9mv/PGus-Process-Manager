@@ -13,31 +13,12 @@ public class Manager implements Runnable{
     public long start;
     public int totalProcess;
 
-    public ConcurrentLinkedQueue<Process> completedProcess = new ConcurrentLinkedQueue<Process>();
+    private ConcurrentLinkedQueue<Process> completedProcess = new ConcurrentLinkedQueue<Process>();
 
-    public boolean stop = false;
-    public boolean mono;
-    public boolean multicore;
-    public boolean turn = false;
-
-    public Core getCore(){
-        return core;
-    }
-    public Core getCore2(){
-        return core2;
-    }
-
-    public Disk getDisk() {
-        return disk;
-    }
-
-    public Printer getPrinter() {
-        return printer;
-    }
-
-    public Scheduling getScheduling() {
-        return scheduling;
-    }
+    private boolean stop = false;
+    private boolean mono;
+    private boolean multicore;
+    private boolean turn = false;
 
     /**
      * Inicia o despachante com parâmetros definidos pelo usuário.
@@ -116,7 +97,10 @@ public class Manager implements Runnable{
             end(process);
     }
 
-
+    /**
+    * Método para receber processos bloqueados do disco ou impressora.
+    * @param process Processo obrigatoriamente bloqueado.
+    */
     public void receiveBlockedProcess(Process process){
         if(!process.isDone())
             if(!mono)
@@ -153,6 +137,10 @@ public class Manager implements Runnable{
         }
     }
     
+    /**
+    *   Método para receber processos vindos do processador.
+    *   @param flag Flag com o valor de uma das constantes estáticas da classe Core.
+    */
     public void fromCore(Process process, int flag){
         if(flag == Core.PRINTER)
             printer.newProcessPrinter(process);
@@ -178,6 +166,26 @@ public class Manager implements Runnable{
             }
             sendToCore();
         }
+    }
+
+    public Core getCore(){
+        return core;
+    }
+
+    public Core getCore2(){
+        return core2;
+    }
+
+    public Disk getDisk() {
+        return disk;
+    }
+
+    public Printer getPrinter() {
+        return printer;
+    }
+
+    public Scheduling getScheduling() {
+        return scheduling;
     }
 
 }

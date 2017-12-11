@@ -1,9 +1,7 @@
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 public class Disk implements Runnable{
     private ConcurrentLinkedQueue<Process> list = new ConcurrentLinkedQueue<Process>();
     private Process tempProcess;
@@ -20,10 +18,16 @@ public class Disk implements Runnable{
         this.stop = stop;
     }
 
+    /**
+    * Construtor recebe a instância do despachante responsável pela movimentação dos processos.
+    */
     public Disk(Manager d){
         this.manager = d;
     }
 
+    /**
+    * Recebe um processo para ser inserido na fila do disco.
+    */
     public void newProcessDisk(Process process){
         list.add(process);      
     }
@@ -47,7 +51,7 @@ public class Disk implements Runnable{
             try {
                 TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
             processing();
         }

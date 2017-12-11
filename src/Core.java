@@ -1,8 +1,5 @@
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Core implements Runnable{
     private int quantum = 1000;
@@ -16,25 +13,11 @@ public class Core implements Runnable{
 
     private Random mRandom = new Random();
 
-    private boolean busy = false;
-    private boolean stop = false;
-
-    /**
-     * 
-     * @return Retorna se o processador encerrou.
-     */
-    public boolean isStop() {
-        return stop;
-    }
-
-    /**
-     * Encerra o processador.
-     * @param stop Se true, o processador será encerrado. Se false, o processador será reinicializado.     */
-    public void setStop(boolean stop) {
-        this.stop = stop;
-    }
-    private boolean preemptive;
+    private boolean busy;
+    private boolean stop;
+    private boolean preemptive; 
     private int id;
+
 
     /**
      * 
@@ -47,6 +30,25 @@ public class Core implements Runnable{
         this.preemptive = b;
         this.id = id;
     }
+
+    /**
+     * 
+     * @return Retorna se o processador encerrou.
+     */
+    public boolean isStop() {
+        return stop;
+    }
+
+
+    /**
+     * Encerra o processador.
+     * @param stop Se true, o processador será encerrado. Se false, o processador será reinicializado.     
+    */
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
+    
+
     /**
      * Seta o valor do quantum do processador em milissegundos.
      * 
@@ -54,6 +56,8 @@ public class Core implements Runnable{
     public void setQuantum(int quantum){
         this.quantum = quantum;
     }
+
+
     /**
      * 
      * @return Retorna o valor do quantum em milissegundos.
@@ -61,6 +65,8 @@ public class Core implements Runnable{
     public int getQuantum() {
         return quantum;
     }
+
+
     /**
      * 
      * @return Retorna o atual processo em processamento no processador.
@@ -68,7 +74,8 @@ public class Core implements Runnable{
     public Process getRunningProcess() {
         return runningProcess;
     }
-    
+  
+  
     /**
      * 
      * @return Retorna true se o processador estiver ocupado e false, caso contrário.
@@ -76,14 +83,9 @@ public class Core implements Runnable{
     public boolean isBusy() {
         return busy;
     }
-    private void ioBlock(int flag){
-        runningProcess.setState(Process.BLOCKED);
-        manager.fromCore(runningProcess, flag);
-        busy = false;
-    }
-    
-    
-    /**
+
+
+     /**
      * Insere um processo no processador. O processo não será aceito caso outro esteja ocupando o processador.
      * 
      * 
@@ -94,6 +96,13 @@ public class Core implements Runnable{
             busy = true;
         }
     }
+
+    private void ioBlock(int flag){
+        runningProcess.setState(Process.BLOCKED);
+        manager.fromCore(runningProcess, flag);
+        busy = false;
+    }
+        
     private void preemptive(){
         long start = System.currentTimeMillis();
         long end = 0;
@@ -175,7 +184,7 @@ public class Core implements Runnable{
             try {
                 TimeUnit.NANOSECONDS.sleep(1);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
             processing();
         }
