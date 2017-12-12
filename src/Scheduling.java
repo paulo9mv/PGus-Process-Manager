@@ -20,6 +20,12 @@ public class Scheduling {
     private final int currentAlgorithm;
     public boolean mono;
 
+    /**
+     * 
+     * @param d Instância do despachante.
+     * @param algorithm Algoritmo de escalonamento a ser usado.
+     * @param mono Sistema monoprogramado.
+     */
     public Scheduling(Manager d, int algorithm, boolean mono){
         this.manager = d;
         this.currentAlgorithm = algorithm;
@@ -33,6 +39,9 @@ public class Scheduling {
         this.priorityQueue = new PriorityBlockingQueue<Process>(11, comparator);
     }
 
+    /**
+     * Invocar este método remove da lista do escalonador o primeiro processo.
+     */
     public void apply(){    
         if(currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
             if (!list.isEmpty())
@@ -42,6 +51,9 @@ public class Scheduling {
                 this.priorityQueue.poll();
     }
     
+    /**
+     * Em sistemas monoprogramados, este método deve ser invocado para troca de processos, trazendo um novo processo a tona.
+     */
     public void setCurrentProcess(){
          if(currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
             if (!list.isEmpty())
@@ -49,36 +61,33 @@ public class Scheduling {
          else
                 currentProcess = null;
             if(currentAlgorithm == SHORTEST || currentAlgorithm == LESSREMAINING)           
-            if(!priorityQueue.isEmpty())    
+            if(!priorityQueue.isEmpty()) 
                 currentProcess = this.priorityQueue.poll();
-            else 
+            else
                 currentProcess = null;
     }
     
+    /**
+     * 
+     * @return Retorna o próximo processo que deve ser executado. Caso não hajam processos, retorna null.
+     */
     public Process getnextProcess(){
         nextProcess = null;
-        if(mono){
+        if(mono)
             return currentProcess;
-        }
         else{
-            try{
-                if (currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
-                    this.nextProcess = this.list.element();
-                else if (currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)
-                    nextProcess = priorityQueue.peek();
-            }
-            catch(NoSuchElementException e){
-            
-            }
+            if (currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
+                this.nextProcess = this.list.element();
+            else if (currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)
+                nextProcess = priorityQueue.peek();
         }
         return nextProcess;
     }
 
     public void insertnewProcess(Process newProcess) {       
         newProcess.setState(Process.READY);
-        if(currentProcess == null && mono){
+        if(currentProcess == null && mono)
             currentProcess = newProcess;
-        }
         else{
             if(currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
                 this.list.add(newProcess);

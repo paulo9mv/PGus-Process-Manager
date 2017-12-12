@@ -7,17 +7,8 @@ public class Printer implements Runnable{
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
-
-    private boolean stop = false;
-
-    public boolean isStop() {
-        return stop;
-    }
-
-    public void setStop(boolean stop) {
-        this.stop = stop;
-    }
-
+    private boolean stop;    
+    
     /**
     * Construtor recebe a instância do despachante responsável pela movimentação dos processos.
     */
@@ -36,6 +27,7 @@ public class Printer implements Runnable{
     private void processing(){
         if(!list.isEmpty()){
             tempProcess = list.element();
+            //System.out.printf("Impressora processando %s\n",tempProcess.getName());
 
             tempProcess.setPrinterCyclesProcessed(1);
 
@@ -56,5 +48,21 @@ public class Printer implements Runnable{
             }
             processing();
         }
+    }
+    
+    /**
+     * 
+     * @return Retorna se o disco está parado.
+     */
+    public boolean isStop() {
+        return stop;
+    }
+
+    /**
+     * 
+     * @param stop Caso true, interrompe o disco. Caso false, inicia o disco.
+     */
+    public void setStop(boolean stop) {
+        this.stop = stop;
     }
 }

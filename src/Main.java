@@ -11,19 +11,17 @@ public class Main{
         new Thread(manager).start();
 
         new Thread(manager.getCore()).start();
-        if(manager.multicore)
+        if(manager.isMulticore())
             new Thread(manager.getCore2()).start();
         new Thread(manager.getDisk()).start();
         new Thread(manager.getPrinter()).start();
         
-        Process[] mProcess = new Process[100010];
         Random mRandom = new Random();
         
-        manager.start = System.currentTimeMillis();
+        manager.setStart(System.currentTimeMillis());
         
         for(int i = 0; i < process; i++)
-            manager.toScheduling(new Process(i, "Process" + i, mRandom.nextInt(10), mRandom.nextInt(10), mRandom.nextInt(10)));
-        
+            manager.toScheduling(new Process(i, "Process" + i, mRandom.nextInt(10) + 1, mRandom.nextInt(10), mRandom.nextInt(10)));    
     }
     
     public static int choicesProcess(Manager m){
@@ -39,7 +37,7 @@ public class Main{
             mono = false;
         
         if(mono){
-            System.out.printf("Choose:\n0 - FIFO, 1 - SHORTEST, 3 - LESSTIME\n");
+            System.out.printf("Choose:\nMono: 0 - FIFO, 1 - SHORTEST, 3 - LESSTIME\n");
             algorithm = scan.nextInt();
         }
         else{

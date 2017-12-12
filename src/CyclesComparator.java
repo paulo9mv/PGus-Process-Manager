@@ -1,5 +1,8 @@
 import java.util.Comparator;
-
+/**
+ * CyclesComparator compara objetos Process por quantidade de ciclos já realizados (processador, disco e impressora).
+ * @author Paulo Vitor
+ */
 public class CyclesComparator implements Comparator<Process>{
 
     @Override

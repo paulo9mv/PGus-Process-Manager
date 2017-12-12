@@ -1,4 +1,3 @@
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -10,15 +9,16 @@ public class Manager implements Runnable{
     private Disk disk;
     private Printer printer;
     private Scheduling scheduling;
-    public long start;
-    public int totalProcess;
+    private long start;
+
+    private int totalProcess;
 
     private ConcurrentLinkedQueue<Process> completedProcess = new ConcurrentLinkedQueue<Process>();
 
-    private boolean stop = false;
+    private boolean stop;
     private boolean mono;
     private boolean multicore;
-    private boolean turn = false;
+    private boolean turn;
 
     /**
      * Inicia o despachante com parâmetros definidos pelo usuário.
@@ -51,12 +51,12 @@ public class Manager implements Runnable{
         if(!this.multicore){
         if(!core.isBusy() && processToCore != null){
             if(!mono){
-            scheduling.apply();
-            core.toProcess(processToCore);
-            }
-            else if(processToCore.getState() != Process.BLOCKED){
+                scheduling.apply();
                 core.toProcess(processToCore);
             }
+            else if(processToCore.getState() != Process.BLOCKED && processToCore.getState() != Process.END)
+                core.toProcess(processToCore);
+            
         }
         }
         else{
@@ -115,7 +115,7 @@ public class Manager implements Runnable{
     }
     
     /**
-     * 
+     * Método para setar a quantidade total de processos que serão executados pelo sistema operacional.
      * @param p A quantidade total de processos que serão executados.
      */
     public void setTotalProcess(int p){
@@ -126,7 +126,7 @@ public class Manager implements Runnable{
         this.completedProcess.add(process);
         System.out.printf("%s completed! %b\n", process.getName(), process.isDone());
         if(this.completedProcess.size() == totalProcess){
-            System.out.printf("\nAll process concluded! %d " + (System.currentTimeMillis() - start) + "\n", totalProcess);
+            System.out.printf("\nAll process concluded! %d " + (System.currentTimeMillis() - this.getStart()) + "\n", totalProcess);
             this.stop = true;
             this.core.setStop(true);
             this.disk.setStop(true);
@@ -135,11 +135,13 @@ public class Manager implements Runnable{
                 this.core2.setStop(true);
             
         }
+        process.setState(Process.END);
     }
     
     /**
-    *   Método para receber processos vindos do processador.
-    *   @param flag Flag com o valor de uma das constantes estáticas da classe Core.
+     *
+     *   Método para receber processos vindos do processador.
+     *   @param flag Flag com o valor de uma das constantes estáticas da classe Core.
     */
     public void fromCore(Process process, int flag){
         if(flag == Core.PRINTER)
@@ -151,7 +153,7 @@ public class Manager implements Runnable{
         else{
             if(mono)
                 this.scheduling.setCurrentProcess();
-            process.setState(Process.READY);
+            
             end(process);
         }
     }
@@ -168,24 +170,70 @@ public class Manager implements Runnable{
         }
     }
 
+    /**
+     * 
+     * @return Instância do processador
+     */
     public Core getCore(){
         return core;
     }
 
+    /**
+     * 
+     * @return Instância do segundo processador.
+     */
     public Core getCore2(){
         return core2;
     }
 
+    
+    /**
+     * 
+     * @return Instância do disco.
+     */
     public Disk getDisk() {
         return disk;
     }
 
+    /**
+     * 
+     * @return Instância da impressora.
+     */
     public Printer getPrinter() {
         return printer;
     }
 
+    /**
+     * 
+     * 
+     * @return Instância do escalonador.
+     */
     public Scheduling getScheduling() {
         return scheduling;
     }
 
+      /**
+     * 
+     * @return Retorna se o sistema possui multinúcleo.
+     */
+    public boolean isMulticore() {
+        return multicore;
+    }
+    
+    /**
+     * 
+     * @return Retorna o tempo de início dado pela função System.currentTimeMillis().
+     */
+    public long getStart() {
+        return start;
+    }
+
+    /**
+     * 
+     * @param start Tempo em milisegundos em que foi iniciado o despachante.
+     */
+    public void setStart(long start) {
+        this.start = start;
+    }
+    
 }

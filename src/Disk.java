@@ -7,13 +7,20 @@ public class Disk implements Runnable{
     private Process tempProcess;
     private Manager manager;
     private Random mRandom = new Random();
+    private boolean stop;
 
-    public boolean stop = false;
-
+    /**
+     * 
+     * @return Retorna se o disco está parado.
+     */
     public boolean isStop() {
         return stop;
     }
 
+    /**
+     * 
+     * @param stop Caso true, interrompe o disco. Caso false, inicia o disco.
+     */
     public void setStop(boolean stop) {
         this.stop = stop;
     }
@@ -35,7 +42,7 @@ public class Disk implements Runnable{
     private void processing(){
         if(!list.isEmpty()){
             tempProcess = list.element();
-
+            //System.out.printf("Disco processando %s\n",tempProcess.getName());
             tempProcess.setDiskCyclesProcessed(1);
 
             if(mRandom.nextInt(100) < 20 || tempProcess.diskComplete()){

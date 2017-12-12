@@ -108,8 +108,10 @@ public class Core implements Runnable{
         long end = 0;
         
         do{
-            if(runningProcess.isDone())
+            if(runningProcess.isDone()){
+                
                 ioBlock(Core.END);
+            }
             if(!runningProcess.CPUComplete())
                 runningProcess.setCyclesProcessed(1);
             
@@ -142,11 +144,13 @@ public class Core implements Runnable{
     }
     private void nonPreemptive(){
         while(runningProcess.getState() == Process.IN_EXECUTION){
-            if(runningProcess.isDone())
+            if(runningProcess.isDone()){
+              //  System.out.printf("%s com END\n", runningProcess.getName());
                 ioBlock(Core.END);
+            }
             if(!runningProcess.CPUComplete())
                 runningProcess.setCyclesProcessed(1);
-            
+           // System.out.printf("Core processando %s\n",runningProcess.getName());
             if(mRandom.nextInt(100) < 20 && !runningProcess.printerComplete()){
                 this.ioBlock(Core.PRINTER);
                 break;

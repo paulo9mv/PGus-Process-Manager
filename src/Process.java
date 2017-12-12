@@ -51,8 +51,8 @@ public class Process{
         return cyclesToComplete;
     }
 
-    public void setCyclesToComplete(int cycles_to_complete) {
-        this.cyclesToComplete = cycles_to_complete;
+    public void setCyclesToComplete(int cyclesToComplete) {
+        this.cyclesToComplete = cyclesToComplete;
     }
 
     public boolean hasPrinter() {
@@ -75,16 +75,16 @@ public class Process{
         return printerCyclesToComplete;
     }
 
-    public void setPrinterCyclesToComplete(int printer_cycles_to_complete) {
-        this.printerCyclesToComplete = printer_cycles_to_complete;
+    public void setPrinterCyclesToComplete(int printerCyclesToComplete) {
+        this.printerCyclesToComplete = printerCyclesToComplete;
     }
 
     public int getDiskCyclesToComplete() {
         return diskCyclesToComplete;
     }
 
-    public void setDiskCyclesToComplete(int disk_cycles_to_complete) {
-        this.diskCyclesToComplete = disk_cycles_to_complete;
+    public void setDiskCyclesToComplete(int diskCyclesToComplete) {
+        this.diskCyclesToComplete = diskCyclesToComplete;
     }
 
     public int getState() {
@@ -96,27 +96,27 @@ public class Process{
     }
 
     public int getCyclesProcessed() {
-        return cycles_processed;
+        return cyclesProcessed;
     }
 
-    public void setCyclesProcessed(int cycles_processed) {
-        this.cycles_processed += cycles_processed;
+    public void setCyclesProcessed(int cyclesProcessed) {
+        this.cyclesProcessed += cyclesProcessed;
     }
 
     public int getPrinterCyclesProcessed() {
         return printerCyclesProcessed;
     }
 
-    public void setPrinterCyclesProcessed(int printer_cycles_processed) {
-        this.printerCyclesProcessed += printer_cycles_processed;
+    public void setPrinterCyclesProcessed(int printerCyclesProcessed) {
+        this.printerCyclesProcessed += printerCyclesProcessed;
     }
 
     public int getDiskCyclesProcessed() {
         return diskCyclesProcessed;
     }
 
-    public void setDiskCyclesProcessed(int disk_cycles_processed) {
-        this.diskCyclesProcessed += disk_cycles_processed;
+    public void setDiskCyclesProcessed(int diskCyclesProcessed) {
+        this.diskCyclesProcessed += diskCyclesProcessed;
     }
 
     public boolean diskComplete(){
