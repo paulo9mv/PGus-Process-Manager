@@ -75,11 +75,16 @@ public class Scheduling {
         nextProcess = null;
         if(mono)
             return currentProcess;
-        else{
-            if (currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
-                this.nextProcess = this.list.element();
-            else if (currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)
-                nextProcess = priorityQueue.peek();
+        else{         
+            try{
+               if (currentAlgorithm == FIFO || currentAlgorithm == ROUNDROBIN)
+                    this.nextProcess = this.list.element();
+                else if (currentAlgorithm == SHORTEST|| currentAlgorithm == LESSREMAINING)
+                    nextProcess = priorityQueue.peek();
+            }
+            catch(NoSuchElementException e){
+            
+            }
         }
         return nextProcess;
     }
